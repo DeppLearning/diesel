@@ -17,10 +17,10 @@ use super::schema::__diesel_schema_migrations::dsl::*;
 /// This trait will go away at some point in the future. Any Diesel connection
 /// should be useable where this trait is required.
 pub trait MigrationConnection: diesel::migration::MigrationConnection {
-    fn previously_run_migration_versions(&self) -> QueryResult<HashSet<String>>;
-    fn latest_run_migration_version(&self) -> QueryResult<Option<String>>;
-    fn latest_run_migration_versions(&self, number: u64) -> QueryResult<Vec<String>>;
-    fn insert_new_migration(&self, version: &str) -> QueryResult<()>;
+    pub fn previously_run_migration_versions(&self) -> QueryResult<HashSet<String>>;
+    pub fn latest_run_migration_version(&self) -> QueryResult<Option<String>>;
+    pub fn latest_run_migration_versions(&self, number: u64) -> QueryResult<Vec<String>>;
+    pub fn insert_new_migration(&self, version: &str) -> QueryResult<()>;
 }
 
 impl<T> MigrationConnection for T
