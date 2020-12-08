@@ -144,7 +144,8 @@ where
     Conn: MigrationConnection,
 {
     let all_migrations = migrations_in_directory(migrations_dir)?;
-    run_migrations(conn, all_migrations, output)
+    run_migrations(conn, all_migrations, output)?;
+    Ok(())
 }
 
 /// Compares migrations found in `migrations_dir` to those that have been applied.
@@ -341,7 +342,7 @@ pub fn run_migrations<Conn, List>(
     conn: &Conn,
     migrations: List,
     output: &mut dyn Write,
-) -> Result<(), RunMigrationsError>
+) -> Result<Vec<String>, RunMigrationsError>
 where
     Conn: MigrationConnection,
     List: IntoIterator,
@@ -355,10 +356,10 @@ where
         .collect();
 
     pending_migrations.sort_by(|a, b| a.version().cmp(b.version()));
-    for migration in pending_migrations {
-        run_migration(conn, &migration, output)?;
+    for migration in &pending_migrations {
+        run_migration(conn, migration, output)?;
     }
-    Ok(())
+    Ok(pending_migrations.iter().map(|pm| pm.version().to_string()).collect())
 }
 
 fn run_migration<Conn>(
