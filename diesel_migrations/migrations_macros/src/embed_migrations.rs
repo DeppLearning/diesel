@@ -58,7 +58,9 @@ pub fn expand(path: String) -> proc_macro2::TokenStream {
                 conn: &C,
                 out: &mut io::Write,
             ) -> Result<(), RunMigrationsError> {
-                run_migrations(conn, ALL_MIGRATIONS.iter().map(|v| *v), out)
+                run_migrations(conn, ALL_MIGRATIONS.iter().map(|v| *v), out)?;
+                Ok(())
+
             }
         }
     }
